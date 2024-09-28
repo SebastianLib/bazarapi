@@ -1,14 +1,15 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
-import {TypeOrmModule} from "@nestjs/typeorm"
+import { TypeOrmModule } from "@nestjs/typeorm"
 import { dataSourceOptions } from 'db/data-source';
 import { UsersModule } from './users/users.module';
 import { CurrentUserMiddleware } from './utility/middlewares/current-user.middleware';
 import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(dataSourceOptions), UsersModule, CategoriesModule, ProductsModule, ReviewsModule],
+  imports: [TypeOrmModule.forRoot(dataSourceOptions), UsersModule, CategoriesModule, ProductsModule, ReviewsModule, ScheduleModule.forRoot()],
   controllers: [],
   providers: [],
 })
@@ -16,6 +17,6 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(CurrentUserMiddleware)
-      .forRoutes({path: '*', method: RequestMethod.ALL});
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }

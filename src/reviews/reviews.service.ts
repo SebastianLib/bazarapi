@@ -32,10 +32,16 @@ export class ReviewsService {
     return `This action returns all reviews`;
   }
 
-  async findAllByProduct(id: number) {
+  async findAllByProduct(id: number): Promise<ReviewEntity[]> {
     const product = await this.productService.findOne(id)
     return await this.reviewRepository.find({
-      where:{product:{id}}
+      where:{product:{id}},
+      relations: {
+        user: true,
+        product: {
+          category: true
+        }
+      }
     })
   }
 
@@ -59,8 +65,9 @@ export class ReviewsService {
     return `This action updates a #${id} review`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} review`;
+  async remove(id: number) {
+    const review = await this.findOne(id)
+    return this.reviewRepository.remove(review)
   }
 
   async findOneByUserAndProduct(userId: number, productId: number) {

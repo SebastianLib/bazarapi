@@ -8,6 +8,7 @@ import { UserSignUpDto } from './dto/user-signup.dto';
 import { hash, compare } from 'bcrypt';
 import { UserSignInDto } from './dto/user-signin.dto';
 import { sign } from 'jsonwebtoken';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class UsersService {
@@ -57,7 +58,7 @@ export class UsersService {
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+    return `This action updatess a #${id} user`;
   }
 
   remove(id: number) {
@@ -70,5 +71,12 @@ export class UsersService {
 
   async accessToken(user: UserEntity): Promise<string> {
     return sign({ id: user.id, email: user.email }, process.env.ACCESS_TOKEN_SECRET_KEY, { expiresIn: process.env.ACCESS_TOKEN_EXPIRE_TIME })
+  }
+
+  @Cron(CronExpression.EVERY_30_SECONDS)
+ async handleCron() {
+    const mail = await this.usersRepository.findOneBy({ email: "seb" })
+    console.log("Xdddddd");
+    
   }
 }
