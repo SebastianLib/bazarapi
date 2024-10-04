@@ -73,10 +73,10 @@ export class UsersService {
     return sign({ id: user.id, email: user.email }, process.env.ACCESS_TOKEN_SECRET_KEY, { expiresIn: process.env.ACCESS_TOKEN_EXPIRE_TIME })
   }
 
-  @Cron(CronExpression.EVERY_30_SECONDS)
- async handleCron() {
-    const mail = await this.usersRepository.findOneBy({ email: "seb" })
-    console.log("Xdddddd");
+//   @Cron(CronExpression.EVERY_30_SECONDS)
+//  async handleCron() {
+//     const mail = await this.usersRepository.findOneBy({ email: "seb" })
+//     console.log("Xdddddd");
     
-  }
+//   }
 }
