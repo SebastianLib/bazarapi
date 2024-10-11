@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { CategoriesService } from 'src/categories/categories.service';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { OrderStatus } from 'src/orders/enums/order-status.enum';
+import dataSource from 'db/data-source';
 
 @Injectable()
 export class ProductsService {
@@ -26,7 +27,25 @@ export class ProductsService {
     return await this.productRepository.save(product)
   }
 
- async findAll() {
+ async findAll(query:any) {
+  let filteredTotalProducts:number;
+  let limit:number
+
+  if(!query.limit){
+    limit=4;
+  }else{
+    limit=query.limit
+  }
+
+  const queryBuilder = dataSource.getRepository(ProductEntity)
+  .createQueryBuilder('product')
+  .leftJoinAndSelect('product.category', 'category')
+  .leftJoin('product.reviews', 'review')
+  .addSelect([
+    "COUNT(review.id) AS reviewCount)",
+    "AVG(review.ratings)::number(10,2) AS avgRating"
+  ])
+
     return await this.productRepository.find();
   }
 
